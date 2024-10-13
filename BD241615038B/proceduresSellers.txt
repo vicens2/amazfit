@@ -1,0 +1,26 @@
+DELIMITER //
+CREATE FUNCTION addUserPro(email varchar(100), password varchar(50), nom varchar (50), ape varchar(50), cif varchar(9), tel int(12), dir varchar(255)) 
+RETURNS BOOLEAN
+
+BEGIN
+	DECLARE EXIT HANDLER FOR 1062 RETURN FALSE; #Si el usuario ya existe devolvera false
+    
+    #Introducimos el usuario
+    INSERT INTO UsuVen(emailVen, password, nombre, apellido, telefono, cif, direccion)
+    VALUES(
+    	email, password, nom, ape, tel, cif, dir
+    );
+    RETURN TRUE;
+END;
+
+DELIMITER //
+CREATE PROCEDURE modifyUserVen(IN emailVen varchar(100), IN nom varchar(50), IN ape varchar(50), IN tel INT(12), IN dir varchar(255))
+BEGIN
+UPDATE UsuVen SET UsuVen.nombre = nom, UsuVen.apellido = ape, UsuVen.telefono = numPhone, UsuVen.direccion = dir  WHERE UsuCli.emailVen = emailVen;
+END;
+
+DELIMITER //
+CREATE PROCEDURE modifyUserVenPassword(IN emailVen varchar(100), IN pass varchar(50))
+BEGIN
+UPDATE UsuCli SET UsuVen.password = pass WHERE UsuVen.emailVen = emailVen;
+END;

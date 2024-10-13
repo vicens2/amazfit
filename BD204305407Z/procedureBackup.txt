@@ -1,0 +1,515 @@
+DELIMITER //
+
+CREATE PROCEDURE usuarioBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE emailBackup VARCHAR(100);
+    DECLARE passwordBackup VARCHAR(50);
+    DECLARE nombreBackup VARCHAR(50);
+    DECLARE apellidoBackup VARCHAR(50);
+    DECLARE telefonoBackup INT(12);
+    DECLARE cifBackup VARCHAR(9);
+    DECLARE direccionBackup VARCHAR(255);
+    
+    DECLARE userBackupCursor CURSOR FOR SELECT * FROM amazfit.UsuVen;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN userBackupCursor;
+
+    backup_loop: LOOP
+        FETCH userBackupCursor INTO emailBackup, passwordBackup, nombreBackup, apellidoBackup, telefonoBackup, cifBackup, direccionBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.UsuVen (emailVen, password, nombre, apellido, telefono, cif, direccion)
+        VALUES (emailBackup, passwordBackup, nombreBackup, apellidoBackup, telefonoBackup, cifBackup, direccionBackup);
+
+    END LOOP;
+
+    CLOSE userBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE clienteBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE emailBackup VARCHAR(100);
+    DECLARE passwordBackup VARCHAR(50);
+    DECLARE nombreBackup VARCHAR(50);
+    DECLARE apellidoBackup VARCHAR(50);
+    DECLARE telefonoBackup INT(12);
+    DECLARE fechaNacimientoBackup DATE;
+
+    DECLARE clientBackupCursor CURSOR FOR SELECT * FROM amazfit.UsuCli;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN clientBackupCursor;
+
+    backup_loop: LOOP
+        FETCH clientBackupCursor INTO emailBackup, passwordBackup, nombreBackup, apellidoBackup, telefonoBackup, fechaNacimientoBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.UsuCli (emailCli, password, nombre, apellido, telefono, fechaNacimiento)
+        VALUES (emailBackup, passwordBackup, nombreBackup, apellidoBackup, telefonoBackup, fechaNacimientoBackup);
+
+    END LOOP;
+
+    CLOSE clientBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE zonaBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE idZonaBackup INT(11);
+    DECLARE nombreZonaBackup VARCHAR(100);
+    DECLARE emailConZonaBackup VARCHAR(100);
+    
+    DECLARE zonaBackupCursor CURSOR FOR SELECT * FROM amazfit.Zona;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN zonaBackupCursor;
+
+    backup_loop: LOOP
+        FETCH zonaBackupCursor INTO idZonaBackup, nombreZonaBackup, emailConZonaBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.Zona (idZona, nombre, emailCon)
+        VALUES (idZonaBackup, nombreZonaBackup, emailConZonaBackup);
+
+    END LOOP;
+
+    CLOSE zonaBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE distribuidoraBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE cifDistribuidoraBackup VARCHAR(9);
+    DECLARE nombreDistribuidoraBackup VARCHAR(100);
+    
+    DECLARE distribuidoraBackupCursor CURSOR FOR SELECT * FROM amazfit.Distribuidora;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN distribuidoraBackupCursor;
+
+    backup_loop: LOOP
+        FETCH distribuidoraBackupCursor INTO cifDistribuidoraBackup, nombreDistribuidoraBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.Distribuidora (cif, nombre)
+        VALUES (cifDistribuidoraBackup, nombreDistribuidoraBackup);
+
+    END LOOP;
+
+    CLOSE distribuidoraBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE categoriaBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE nombreCategoriaBackup VARCHAR(100);
+    
+    DECLARE categoriaBackupCursor CURSOR FOR SELECT * FROM amazfit.Categoria;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN categoriaBackupCursor;
+
+    backup_loop: LOOP
+        FETCH categoriaBackupCursor INTO nombreCategoriaBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.Categoria (nombreCat)
+        VALUES (nombreCategoriaBackup);
+
+    END LOOP;
+
+    CLOSE categoriaBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE direccionBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE idDireccionBackup INT(11);
+    DECLARE calleDireccionBackup VARCHAR(255);
+    DECLARE poblacionDireccionBackup VARCHAR(255);
+    DECLARE provinciaDireccionBackup VARCHAR(255);
+    DECLARE codigoPostalDireccionBackup VARCHAR(5);
+    DECLARE paisDireccionBackup VARCHAR(100);
+    DECLARE emailCliDireccionBackup VARCHAR(100);
+    DECLARE idZonaDireccionBackup INT(11);
+    
+    DECLARE direccionBackupCursor CURSOR FOR SELECT * FROM amazfit.Direccion;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN direccionBackupCursor;
+
+    backup_loop: LOOP
+        FETCH direccionBackupCursor INTO idDireccionBackup, calleDireccionBackup, poblacionDireccionBackup, provinciaDireccionBackup, codigoPostalDireccionBackup, paisDireccionBackup, emailCliDireccionBackup, idZonaDireccionBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.Direccion (idDireccion, calle, poblacion, provincia, codigoPostal, pais, emailCli, idZona)
+        VALUES (idDireccionBackup, calleDireccionBackup, poblacionDireccionBackup, provinciaDireccionBackup, codigoPostalDireccionBackup, paisDireccionBackup, emailCliDireccionBackup, idZonaDireccionBackup);
+
+    END LOOP;
+
+    CLOSE direccionBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE carritoBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE idCarritoBackup INT(11);
+    DECLARE fechaCarritoBackup DATE;
+    DECLARE horaCarritoBackup TIME;
+    DECLARE totalPagarCarritoBackup DECIMAL(10, 2);
+    DECLARE transaccionCarritoBackup VARCHAR(100);
+    DECLARE fechaEnvioCarritoBackup DATE;
+    DECLARE fechaEntregaCarritoBackup DATE;
+    DECLARE estadoPedidoCarritoBackup VARCHAR(255);
+    DECLARE emailCliCarritoBackup VARCHAR(100);
+    DECLARE idDireccionCarritoBackup INT(11);
+    
+    DECLARE carritoBackupCursor CURSOR FOR SELECT * FROM amazfit.Carrito;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN carritoBackupCursor;
+
+    backup_loop: LOOP
+        FETCH carritoBackupCursor INTO idCarritoBackup, fechaCarritoBackup, horaCarritoBackup, totalPagarCarritoBackup, transaccionCarritoBackup, fechaEnvioCarritoBackup, fechaEntregaCarritoBackup, estadoPedidoCarritoBackup, emailCliCarritoBackup, idDireccionCarritoBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.Carrito (idCarrito, fecha, hora, totalPagar, transaccion, fechaEnvio, fechaEntrega, estadoPedido, emailCli, idDireccion)
+        VALUES (idCarritoBackup, fechaCarritoBackup, horaCarritoBackup, totalPagarCarritoBackup, transaccionCarritoBackup, fechaEnvioCarritoBackup, fechaEntregaCarritoBackup, estadoPedidoCarritoBackup, emailCliCarritoBackup, idDireccionCarritoBackup);
+
+    END LOOP;
+
+    CLOSE carritoBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE incidenciaBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE idIncidenciaBackup INT(11);
+    DECLARE fechaIncidenciaBackup DATE;
+    DECLARE horaIncidenciaBackup TIME;
+    DECLARE motivoIncidenciaBackup VARCHAR(255);
+    DECLARE cifIncidenciaBackup VARCHAR(9);
+    
+    DECLARE incidenciaBackupCursor CURSOR FOR SELECT * FROM amazfit.Incidencia;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN incidenciaBackupCursor;
+
+    backup_loop: LOOP
+        FETCH incidenciaBackupCursor INTO idIncidenciaBackup, fechaIncidenciaBackup, horaIncidenciaBackup, motivoIncidenciaBackup, cifIncidenciaBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.Incidencia (idIncidencia, fecha, hora, motivo, cif)
+        VALUES (idIncidenciaBackup, fechaIncidenciaBackup, horaIncidenciaBackup, motivoIncidenciaBackup, cifIncidenciaBackup);
+
+    END LOOP;
+
+    CLOSE incidenciaBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE productoBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE idProductoBackup INT(11);
+    DECLARE nombreProductoBackup VARCHAR(100);
+    DECLARE descripcionProductoBackup VARCHAR(255);
+    DECLARE precioProductoBackup DECIMAL(10, 2);
+    DECLARE descuentoProductoBackup INT(3);
+    DECLARE stockProductoBackup INT;
+    DECLARE activoProductoBackup BOOLEAN;
+    DECLARE nombreCatProductoBackup VARCHAR(100);
+    
+    DECLARE productoBackupCursor CURSOR FOR SELECT * FROM amazfit.Producto;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN productoBackupCursor;
+
+    backup_loop: LOOP
+        FETCH productoBackupCursor INTO idProductoBackup, nombreProductoBackup, descripcionProductoBackup, precioProductoBackup, descuentoProductoBackup, stockProductoBackup, activoProductoBackup, nombreCatProductoBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.Producto (idProducto, nombre, descripcion, precio, descuento, stock, activo, nombreCat)
+        VALUES (idProductoBackup, nombreProductoBackup, descripcionProductoBackup, precioProductoBackup, descuentoProductoBackup, stockProductoBackup, activoProductoBackup, nombreCatProductoBackup);
+
+    END LOOP;
+
+    CLOSE productoBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE distribuidoraZonaBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE cifDistribuidoraZonaBackup VARCHAR(9);
+    DECLARE idZonaDistribuidoraZonaBackup INT;
+    
+    DECLARE distribuidoraZonaBackupCursor CURSOR FOR SELECT * FROM amazfit.DistribuidoraZona;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN distribuidoraZonaBackupCursor;
+
+    backup_loop: LOOP
+        FETCH distribuidoraZonaBackupCursor INTO cifDistribuidoraZonaBackup, idZonaDistribuidoraZonaBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.DistribuidoraZona (cif, idZona)
+        VALUES (cifDistribuidoraZonaBackup, idZonaDistribuidoraZonaBackup);
+
+    END LOOP;
+
+    CLOSE distribuidoraZonaBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE caracteristicaBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE idCaracteristicaBackup INT(11);
+    DECLARE colorCaracteristicaBackup VARCHAR(50);
+    DECLARE tallaCaracteristicaBackup VARCHAR(50);
+    DECLARE emailVenCaracteristicaBackup VARCHAR(100);
+    DECLARE idProductoCaracteristicaBackup INT(11);
+    
+    DECLARE caracteristicaBackupCursor CURSOR FOR SELECT * FROM amazfit.Caracteristica;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN caracteristicaBackupCursor;
+
+    backup_loop: LOOP
+        FETCH caracteristicaBackupCursor INTO idCaracteristicaBackup, colorCaracteristicaBackup, tallaCaracteristicaBackup, emailVenCaracteristicaBackup, idProductoCaracteristicaBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.Caracteristica (idCaracteristica, color, talla, emailVen, idProducto)
+        VALUES (idCaracteristicaBackup, colorCaracteristicaBackup, tallaCaracteristicaBackup, emailVenCaracteristicaBackup, idProductoCaracteristicaBackup);
+
+    END LOOP;
+
+    CLOSE caracteristicaBackupCursor;
+END;
+
+DELIMITER //
+CREATE PROCEDURE cantidadBackup()
+BEGIN
+    DECLARE finished INTEGER default 0;
+    DECLARE cantidadCantidadBackup INT(4);
+    DECLARE idCaracteristicaCantidadBackup INT(11);
+    DECLARE idCarritoCantidadBackup INT(11);
+    DECLARE emailConCantidadBackup VARCHAR(100);
+    
+    DECLARE cantidadBackupCursor CURSOR FOR SELECT * FROM amazfit.Cantidad;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    OPEN cantidadBackupCursor;
+
+    backup_loop: LOOP
+        FETCH cantidadBackupCursor INTO cantidadCantidadBackup, idCaracteristicaCantidadBackup, idCarritoCantidadBackup, emailConCantidadBackup;
+
+        IF finished = 1 THEN
+            LEAVE backup_loop;
+        END IF;
+
+        INSERT INTO bdbackup.Cantidad (cantidad, idCaracteristica, idCarrito, emailCon)
+        VALUES (cantidadCantidadBackup, idCaracteristicaCantidadBackup, idCarritoCantidadBackup, emailConCantidadBackup);
+
+    END LOOP;
+
+    CLOSE cantidadBackupCursor;
+END;
+
+
+DELIMITER //
+CREATE PROCEDURE backUp()
+NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER
+BEGIN
+    
+    -- SI EXISTE LA ELIMINAMOS
+
+    DROP DATABASE IF EXISTS bdbackup;
+
+    -- CREAMOS LA BASE DE DATOS DEL BACKUP
+    CREATE DATABASE bdbackup;
+
+DELIMITER //
+
+-- Crear la tabla UsuVen en bdbackup
+CREATE TABLE bdbackup.UsuVen (
+    emailVen VARCHAR(100) PRIMARY KEY,
+    password VARCHAR(50) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NULL,
+    telefono INT(12) NOT NULL,
+    cif VARCHAR(9) NOT NULL,
+    direccion VARCHAR(255) NOT NULL
+);
+
+-- Crear la tabla UsuCli en bdbackup
+CREATE TABLE bdbackup.UsuCli (
+    emailCli VARCHAR(100) PRIMARY KEY,
+    password VARCHAR(50) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    telefono INT(12) NULL,
+    fechaNacimiento DATE NULL
+);
+
+-- Crear la tabla Zona en bdbackup
+CREATE TABLE bdbackup.Zona (
+    idZona INT(11) PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    emailCon VARCHAR(100) NOT NULL,
+    FOREIGN KEY (emailCon) REFERENCES bdbackup.UsuCon(emailCon)
+);
+
+-- Crear la tabla Distribuidora en bdbackup
+CREATE TABLE bdbackup.Distribuidora (
+    cif VARCHAR(9) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+-- Crear la tabla Categoria en bdbackup
+CREATE TABLE bdbackup.Categoria (
+    nombreCat VARCHAR(100) PRIMARY KEY
+);
+
+-- Crear la tabla Direccion en bdbackup
+CREATE TABLE bdbackup.Direccion (
+    idDireccion INT(11) PRIMARY KEY AUTO_INCREMENT,
+    calle VARCHAR(255) NOT NULL,
+    poblacion VARCHAR(255) NOT NULL,
+    provincia VARCHAR(255) NOT NULL,
+    codigoPostal VARCHAR(5) NOT NULL,
+    pais VARCHAR(100),
+    emailCli VARCHAR(100) NOT NULL,
+    idZona INT(11) NOT NULL,
+    FOREIGN KEY (emailCli) REFERENCES bdbackup.UsuCli(emailCli),
+    FOREIGN KEY (idZona) REFERENCES bdbackup.Zona(idZona)
+);
+
+-- Crear la tabla Carrito en bdbackup
+CREATE TABLE bdbackup.Carrito (
+    idCarrito INT(11) PRIMARY KEY AUTO_INCREMENT,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    totalPagar DECIMAL(10, 2) NOT NULL,
+    transaccion VARCHAR(100),
+    fechaEnvio DATE,
+    fechaEntrega DATE,
+    estadoPedido VARCHAR(255) NOT NULL,
+    emailCli VARCHAR(100) NOT NULL,
+    idDireccion INT(11) NOT NULL,
+    FOREIGN KEY (emailCli) REFERENCES bdbackup.UsuCli (emailCli),
+    FOREIGN KEY (idDireccion) REFERENCES bdbackup.Direccion (idDireccion)
+);
+
+-- Crear la tabla Incidencia en bdbackup
+CREATE TABLE bdbackup.Incidencia (
+    idIncidencia INT(11) PRIMARY KEY AUTO_INCREMENT,
+    fecha DATE,
+    hora TIME,
+    motivo VARCHAR(255) NOT NULL,
+    cif VARCHAR(9) NOT NULL,
+    FOREIGN KEY (cif) REFERENCES bdbackup.Distribuidora(cif)
+);
+
+-- Crear la tabla Producto en bdbackup
+CREATE TABLE bdbackup.Producto (
+    idProducto INT (11) PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(255) NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL,
+    descuento INT(3),
+    stock INT NOT NULL,
+    activo BOOLEAN NOT NULL,
+    nombreCat VARCHAR(100) NOT NULL,
+    FOREIGN KEY (nombreCat) REFERENCES bdbackup.Categoria(nombreCat)
+);
+
+-- Crear la tabla DistribuidoraZona en bdbackup
+CREATE TABLE bdbackup.DistribuidoraZona (
+    cif VARCHAR(9) NOT NULL,
+    idZona INT NOT NULL,
+    PRIMARY KEY (cif, idZona),
+    FOREIGN KEY (idZona) REFERENCES bdbackup.Zona(idZona),
+    FOREIGN KEY (cif) REFERENCES bdbackup.Distribuidora(cif)
+);
+
+-- Crear la tabla Caracteristica en bdbackup
+CREATE TABLE bdbackup.Caracteristica (
+    idCaracteristica INT (11) PRIMARY KEY AUTO_INCREMENT,
+    color VARCHAR(50) NULL,
+    talla VARCHAR(50) NULL,
+    emailVen VARCHAR(100) NOT NULL,
+    idProducto INT(11) NOT NULL,
+    FOREIGN KEY (emailVen) REFERENCES bdbackup.UsuVen(emailVen),
+    FOREIGN KEY (idProducto) REFERENCES bdbackup.Producto(idProducto)
+);
+
+-- Crear la tabla Cantidad en bdbackup
+CREATE TABLE bdbackup.Cantidad (
+    cantidad INT(4) NOT NULL,
+    idCaracteristica INT (11) NOT NULL,
+    idCarrito INT(11) NOT NULL,
+    emailCon VARCHAR(100) NOT NULL,
+    PRIMARY KEY (idCaracteristica, idCarrito, emailCon),
+    FOREIGN KEY (idCarrito) REFERENCES bdbackup.Carrito(idCarrito),
+    FOREIGN KEY (idCaracteristica) REFERENCES bdbackup.Caracteristica(idCaracteristica),
+    FOREIGN KEY (emailCon) REFERENCES bdbackup.UsuCon(emailCon)
+);
+
+    CALL usuarioBackup();
+    CALL clienteBackup();
+    CALL zonaBackup();
+    CALL distribuidoraBackup();
+    CALL categoriaBackup();
+    CALL direccionBackup();
+    CALL carritoBackup();
+    CALL incidenciaBackup();
+    CALL productoBackup();
+    CALL distribuidoraZonaBackup();
+    CALL caracteristicaBackup();
+    CALL cantidadBackup();
+END;

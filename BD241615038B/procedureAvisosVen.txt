@@ -1,0 +1,26 @@
+DELIMITER //
+
+CREATE PROCEDURE notificar_aviso(IN venedor_id INT)
+BEGIN
+    DECLARE v_avisos INT;
+    DECLARE v_estat_actual VARCHAR(20);
+
+    SELECT avisos, estat INTO v_avisos, v_estat_actual
+    FROM venedors
+    WHERE id = venedor_id;
+
+    SET v_avisos = v_avisos + 1;
+
+    UPDATE venedors
+    SET avisos = v_avisos;
+
+    IF v_avisos > 3 AND v_estat_actual = 'NORMAL' THEN
+        UPDATE venedors
+        SET estat = 'SOSPITÓS'
+        WHERE id = venedor_id;
+    ELSEIF v_avisos > 6 AND v_estat_actual = 'SOSPITÓS' THEN
+        UPDATE venedors
+        SET estat = 'DOLENT'
+        WHERE id = venedor_id;
+    END IF;
+END;

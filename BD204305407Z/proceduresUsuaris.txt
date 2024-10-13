@@ -1,0 +1,48 @@
+DELIMITER //
+CREATE FUNCTION addUserCli(email varchar(100), password varchar(50), nom varchar (50), ape varchar(50)) 
+RETURNS BOOLEAN
+
+BEGIN
+	DECLARE EXIT HANDLER FOR 1062 RETURN FALSE; #Si el usuario ya existe devolvera false
+    
+    #Introducimos el usuario
+    INSERT INTO UsuCli(emailCli, password, nombre, apellido)
+    VALUES(
+    	email, password, nom, ape
+    );
+    RETURN TRUE;
+END;
+
+DELIMITER //
+CREATE FUNCTION addUserPro(email varchar(100), password varchar(50), nom varchar (50), ape varchar(50), cif varchar(9), tel int(12), dir varchar(255)) 
+RETURNS BOOLEAN
+
+BEGIN
+	DECLARE EXIT HANDLER FOR 1062 RETURN FALSE; #Si el usuario ya existe devolvera false
+    
+    #Introducimos el usuario
+    INSERT INTO UsuVen(emailVen, password, nombre, apellido, telefono, cif, direccion)
+    VALUES(
+    	email, password, nom, ape, tel, cif, dir
+    );
+    RETURN TRUE;
+END;
+
+DELIMITER //
+CREATE PROCEDURE modifyUserCli(IN emailCli varchar(100), IN nom varchar(50), IN ape varchar(50), IN numPhone INT(12), IN dBirth DATE)
+BEGIN
+UPDATE UsuCli SET UsuCli.nombre = nom, UsuCli.apellido = ape, UsuCli.telefono = numPhone, UsuCli.fechaNacimiento = dBirth  WHERE UsuCli.emailCli = emailCli;
+END;
+
+DELIMITER //
+CREATE PROCEDURE modifyUserCliPassword(IN emailCli varchar(100), IN pass varchar(50))
+BEGIN
+UPDATE UsuCli SET UsuCli.password = pass WHERE UsuCli.emailCli = emailCli;
+END;
+
+DELIMITER //
+CREATE PROCEDURE deleteDirection(IN idDir int(11))
+BEGIN
+    DELETE FROM Carrito WHERE (estadoPedido = 'CANCELED' OR estadoPedido = 'RETURNED') AND idDireccion = idDir;
+    DELETE FROM Direccion WHERE idDireccion = idDir;
+END;
